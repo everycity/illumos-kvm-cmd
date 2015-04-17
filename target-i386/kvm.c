@@ -38,6 +38,7 @@
 #ifdef CONFIG_KVM_PARA
 #include <linux/kvm_para.h>
 #endif
+#define KVM_CPUID_SIGNATURE    0x40000000
 
 #ifdef __sun__
 #define	__u64	uint64_t
@@ -325,9 +326,7 @@ int kvm_arch_init_vcpu(CPUState *env)
     uint32_t limit, i, j, cpuid_i;
     uint32_t unused;
     struct kvm_cpuid_entry2 *c;
-#ifdef CONFIG_KVM_PARA
     uint32_t signature[3];
-#endif
 
     r = _kvm_arch_init_vcpu(env);
     if (r < 0) {
@@ -350,7 +349,6 @@ int kvm_arch_init_vcpu(CPUState *env)
 
     cpuid_i = 0;
 
-#ifdef CONFIG_KVM_PARA
     /* Paravirtualization CPUIDs */
     memcpy(signature, "KVMKVMKVM\0\0\0", 12);
     c = &cpuid_data.entries[cpuid_i++];
@@ -361,6 +359,7 @@ int kvm_arch_init_vcpu(CPUState *env)
     c->ecx = signature[1];
     c->edx = signature[2];
 
+#ifdef CONFIG_KVM_PARA
     c = &cpuid_data.entries[cpuid_i++];
     memset(c, 0, sizeof(*c));
     c->function = KVM_CPUID_FEATURES;
