@@ -107,13 +107,21 @@ update:
 	git pull --rebase
 
 manifest:
-	cp manifest $(DESTDIR)/$(DESTNAME)
+	#cp manifest $(DESTDIR)/$(DESTNAME)
+
+	# we only need qemu-system-x86_64 from this branch
+	echo "d smartdc/bin/ec 0555 root bin" >> $(DESTDIR)/$(DESTNAME)
+	echo "f smartdc/bin/ec/qemu-system-x86_64 0555 root bin" >> $(DESTDIR)/$(DESTNAME)
 
 mancheck_conf:
 
 install: world
-	DESTDIR=$(DESTDIR) PATH=$(CTFBINDIR):$(PATH) V=1 gmake install
-	$(INSTALL) -f $(DESTDIR)/usr/lib/mdb/proc/amd64/ qemu.so
+	#DESTDIR=$(DESTDIR) PATH=$(CTFBINDIR):$(PATH) V=1 gmake install
+	#$(INSTALL) -f $(DESTDIR)/usr/lib/mdb/proc/amd64/ qemu.so
+
+	# we only need qemu-system-x86_64 from this branch
+	$(INSTALL) -d $(DESTDIR)/smartdc/bin/ec
+	$(INSTALL) -f $(DESTDIR)/smartdc/bin/ec x86_64-softmmu/qemu-system-x86_64
 
 clean:
 	gmake clean
